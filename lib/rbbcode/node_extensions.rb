@@ -39,7 +39,7 @@ class RbbCode
   module BlockquoteNode
     include RecursiveConversion
     
-    def to_html
+    def quote_to_html
       if respond_to?(:author)
         # A QUOTE tag formatted like [quote=Original Author]Text[/url]
         "\n<blockquote><em>Posted by <strong>#{author.text_value}</strong></em>" + recursively_convert(contents) + "</blockquote>\n"
@@ -87,7 +87,7 @@ class RbbCode
   module TagNode
     include RecursiveConversion
     
-    TAG_MAPPINGS = {'b' => 'strong', 'i' => 'em', 'u' => 'u', 'url' => URLTagNode, 'img' => ImgTagNode}
+    TAG_MAPPINGS = {'b' => 'strong', 'i' => 'em', 'u' => 'u', 'url' => URLTagNode, 'img' => ImgTagNode, 'quote' => BlockquoteNode}
     
     def contents
       # The first element is the opening tag, the second is everything inside,
