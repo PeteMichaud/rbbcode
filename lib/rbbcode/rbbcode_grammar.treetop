@@ -96,7 +96,7 @@ grammar RbbCodeGrammar
   
   rule tag
     # Make sure that anytime you call def_tag, you add it to this list:
-    bold / italic / underline / simple_url / complex_url / img
+    bold / italic / underline / simple_url / complex_url / img / complex_quote
   end
   
   <%= def_tag 'bold', 'b' %>
@@ -110,4 +110,27 @@ grammar RbbCodeGrammar
     text:(!'[/url]' .)+
     '[/url]'
   end
+
+  rule complex_blockquote
+    break_ws*
+    '[quote=' author:[^\]]+ ']'
+    contents:(
+      # Possible linebreaks after opening quote tag
+      break_ws*
+
+      # First paragraph (mandatory)
+      (blockquote_paragraph <RbbCode::ParagraphNode>)
+
+      # Subsequent paragraphs (optional)
+      (
+        (break_ws 2..)
+        (blockquote_paragraph <RbbCode::ParagraphNode>)
+      )*
+
+      # Possible linebreaks before closing quote tag
+      break_ws*
+    )
+    '[/quote]'
+  end
+
 end
