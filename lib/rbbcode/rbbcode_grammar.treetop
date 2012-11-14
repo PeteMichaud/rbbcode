@@ -96,7 +96,7 @@ grammar RbbCodeGrammar
   
   rule tag
     # Make sure that anytime you call def_tag, you add it to this list:
-    bold / italic / underline / simple_url / complex_url / img / complex_quote
+    bold / italic / underline / simple_url / complex_url / img / complex_blockquote
   end
   
   <%= def_tag 'bold', 'b' %>
