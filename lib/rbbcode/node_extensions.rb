@@ -40,7 +40,13 @@ class RbbCode
     include RecursiveConversion
     
     def to_html
-      "\n<blockquote>" + recursively_convert(contents) + "</blockquote>\n"
+      if respond_to?(:author)
+        # A QUOTE tag formatted like [quote=Original Author]Text[/url]
+        "\n<blockquote><em>Posted by <strong>#{author.text_value}</strong></em>" + recursively_convert(contents) + "</blockquote>\n"
+      else
+        # A QUOTE tag formatted like [quote]Text[/quote]
+        "\n<blockquote>" + recursively_convert(contents) + "</blockquote>\n"
+      end
     end
   end
   
