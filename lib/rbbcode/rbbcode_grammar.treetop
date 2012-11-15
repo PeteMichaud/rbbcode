@@ -15,7 +15,7 @@ grammar RbbCodeGrammar
   rule document
     # Consume the trailing linebreaks, because the paragraph lookahead
     # doesn't consume them.
-    contents:(blockquote <RbbCode::BlockquoteNode> / list <RbbCode::ListNode> / paragraph <RbbCode::ParagraphNode>)* break_ws* <RbbCode::DocumentNode>
+    contents:(blockquote <RbbCode::BlockquoteNode> / complex_blockquote <RbbCode::BlockquoteNode> / list <RbbCode::ListNode> / paragraph <RbbCode::ParagraphNode>)* break_ws* <RbbCode::DocumentNode>
   end
   
   rule paragraph
@@ -67,7 +67,29 @@ grammar RbbCodeGrammar
     )
     '[/quote]'
   end
-  
+
+  rule complex_blockquote
+      break_ws*
+      '[quote=' author:[^\]]+ ']'
+      contents:(
+        # Possible linebreaks after opening quote tag
+        break_ws*
+
+        # First paragraph (mandatory)
+        (blockquote_paragraph <RbbCode::ParagraphNode>)
+
+        # Subsequent paragraphs (optional)
+        (
+          (break_ws 2..)
+          (blockquote_paragraph <RbbCode::ParagraphNode>)
+        )*
+
+        # Possible linebreaks before closing quote tag
+        break_ws*
+      )
+      '[/quote]'
+    end
+
   rule blockquote_paragraph
     (!('[/quote]' / (break_ws 2..)) paragraph_contents)+
   end
@@ -96,7 +118,7 @@ grammar RbbCodeGrammar
   
   rule tag
     # Make sure that anytime you call def_tag, you add it to this list:
-    bold / italic / underline / simple_url / complex_url / img / complex_blockquote
+    bold / italic / underline / simple_url / complex_url / img
   end
   
   <%= def_tag 'bold', 'b' %>
@@ -109,28 +131,6 @@ grammar RbbCodeGrammar
     '[url=' url:[^\]]+ ']'
     text:(!'[/url]' .)+
     '[/url]'
-  end
-
-  rule complex_blockquote
-    break_ws*
-    '[quote=' author:[^\]]+ ']'
-    contents:(
-      # Possible linebreaks after opening quote tag
-      break_ws*
-
-      # First paragraph (mandatory)
-      (blockquote_paragraph <RbbCode::ParagraphNode>)
-
-      # Subsequent paragraphs (optional)
-      (
-        (break_ws 2..)
-        (blockquote_paragraph <RbbCode::ParagraphNode>)
-      )*
-
-      # Possible linebreaks before closing quote tag
-      break_ws*
-    )
-    '[/quote]'
   end
 
 end
