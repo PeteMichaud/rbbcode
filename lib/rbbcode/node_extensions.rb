@@ -39,10 +39,10 @@ class RbbCode
   module BlockquoteNode
     include RecursiveConversion
     
-    def quote_to_html
+    def to_html
       if respond_to?(:author)
         # A QUOTE tag formatted like [quote=Original Author]Text[/url]
-        "\n<blockquote><em>Posted by <strong>#{author.text_value}</strong></em>" + recursively_convert(contents) + "</blockquote>\n"
+        "\n<blockquote><em>Posted by <strong>#{author.text_value}</strong></em><br />" + recursively_convert(contents) + "</blockquote>\n"
       else
         # A QUOTE tag formatted like [quote]Text[/quote]
         "\n<blockquote>" + recursively_convert(contents) + "</blockquote>\n"
